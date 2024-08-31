@@ -7,6 +7,8 @@ from res_api import views
 
 router = DefaultRouter()
 router.register('nick-viewset', views.NickViewSet, basename='nick-viewset')
+router.register('profile', views.UserProfileViewSet)
+
 
 urlpatterns = [
     path('nickapi/', views.NickApiView.as_view()),
