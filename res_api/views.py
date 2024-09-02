@@ -6,6 +6,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework import filters
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
+from rest_framework.permissions import IsAuthenticated
 
 from res_api import serializers
 from res_api import models
@@ -106,3 +107,34 @@ class UserProfileViewSet(viewsets.ModelViewSet):
 class UserLoginApiView(ObtainAuthToken):
     """Handle creating user authentication tokens"""
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+
+
+class UserProfileFeedViewSet(viewsets.ModelViewSet):
+    """Handle creating, reading and updating profile feed items"""
+    authentication_classes = (TokenAuthentication,)
+    serializer_class = serializers.ProfileFeedItemSerializer
+    queryset = models.ProfileFeedItem.objects.all()
+    permission_classes = (
+        permissions.UpdateOwnStatus, IsAuthenticated)
+
+    def perform_create(self, serializer):
+        """Sets the user profile to the logged in user"""
+        serializer.save(user_profile=self.request.user)
+
+
+class ProductViewSet(viewsets.ModelViewSet):
+    """Handles creating, reading, updating, and deleting products"""
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    queryset = models.Product.objects.all()
+    serializer_class = serializers.ProductSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        """Handle deleting a product"""
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def perform_destroy(self, instance):
+        """Perform the actual deletion"""
+        instance.delete()

@@ -4,10 +4,11 @@ from rest_framework.routers import DefaultRouter
 
 from res_api import views
 
-
 router = DefaultRouter()
 router.register('nick-viewset', views.NickViewSet, basename='nick-viewset')
 router.register('profile', views.UserProfileViewSet)
+router.register('feed', views.UserProfileFeedViewSet)
+router.register('products', views.ProductViewSet)
 
 
 urlpatterns = [
