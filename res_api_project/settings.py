@@ -12,6 +12,14 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 from datetime import timedelta
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+SECRET_KEY = os.environ.get('SECRET_KEY')
+DEBUG = bool(int(os.environ.get('DEBUG', 0)))
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -120,20 +128,20 @@ WSGI_APPLICATION = 'res_api_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'defaultdb',
-        'USER': 'avnadmin',
-        'PASSWORD': 'AVNS_9CmC8lEIqqiSrhWv94f',
-        'HOST': 'pg-2d4b3bc9-nickfchmail-de4e.b.aivencloud.com',
-        'PORT': '28342',
+        'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.postgresql'),
+        'NAME': os.environ.get('DB_NAME', 'defaultdb'),
+        'USER': os.environ.get('DB_USER', 'avnadmin'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+        'HOST': os.environ.get('DB_HOST', ''),
+        'PORT': os.environ.get('DB_PORT', '28342'),
         'OPTIONS': {
             'sslmode': 'require',
         },
     }
 }
-
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
+print("Database configuration:", DATABASES)
 
 AUTH_PASSWORD_VALIDATORS = [
     {
